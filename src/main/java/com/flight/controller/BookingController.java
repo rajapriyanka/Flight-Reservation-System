@@ -24,13 +24,10 @@ public class BookingController {
 	}
 
 	
-	@PostMapping("/book")
-	public ResponseEntity<ApiResponse<List<SuccessMessage>>> bookTicket(@Valid @RequestBody BookingRequestDto request) {
-		bookingService.bookTicket(request.getUsername(), request.getTripId(), request.getSeatClass(),
-				request.getTicketCount());
-
-		List<SuccessMessage> messages = List.of(new SuccessMessage("Booking completed successfully"));
-		return ResponseEntity.ok(ApiResponse.success(messages));
+	@GetMapping("/fetchBooking/{username}")
+	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getBookingsByUser(@PathVariable String username) {
+		List<BookingResponseDto> bookings = bookingService.getBookingsByUsername(username);
+		return ResponseEntity.ok(ApiResponse.success(bookings));
 	}
 
 	@GetMapping("/fetchBooking/{username}")
