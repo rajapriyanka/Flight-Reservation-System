@@ -19,10 +19,6 @@ public class BookingController {
 
 	private final BookingService bookingService;
 
-	public BookingController(BookingService bookingService) {
-		this.bookingService = bookingService;
-	}
-
 	
 	@GetMapping("/fetchBooking/{username}")
 	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getBookingsByUser(@PathVariable String username) {
