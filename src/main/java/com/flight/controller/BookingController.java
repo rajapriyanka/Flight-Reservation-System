@@ -24,9 +24,9 @@ public class BookingController {
 	}
 
 	
-	@GetMapping("/fetchBookings")
-	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getAllBookings() {
-		List<BookingResponseDto> bookings = bookingService.getAllBookings();
+	@GetMapping("/fetchBooking/{username}")
+	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getBookingsByUser(@PathVariable String username) {
+		List<BookingResponseDto> bookings = bookingService.getBookingsByUsername(username);
 		return ResponseEntity.ok(ApiResponse.success(bookings));
 	}
 
