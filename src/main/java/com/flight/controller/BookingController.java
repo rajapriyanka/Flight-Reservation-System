@@ -23,6 +23,7 @@ public class BookingController {
 		this.bookingService = bookingService;
 	}
 
+	
 	@GetMapping("/fetchBookings")
 	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getAllBookings() {
 		List<BookingResponseDto> bookings = bookingService.getAllBookings();
