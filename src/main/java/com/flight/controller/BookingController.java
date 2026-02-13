@@ -9,11 +9,10 @@ import com.flight.util.SuccessMessage;
 import jakarta.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
-
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -21,19 +20,25 @@ public class BookingController {
 
 	private final BookingService bookingService;
 
-	
-	@GetMapping("/fetchBooking/{username}")
-	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getBookingsByUser(@PathVariable String name) {
-		List<BookingResponseDto> bookings = bookingService.getBookingsByUsername(username);
+	public BookingController(BookingService bookingService) {
+		this.bookingService = bookingService;
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@GetMapping("/fetchBookings")
+	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getAllBookings() {
+		List<BookingResponseDto> bookings = bookingService.getAllBookings();
 		return ResponseEntity.ok(ApiResponse.success(bookings));
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@GetMapping("/fetchBooking/{username}")
 	public ResponseEntity<ApiResponse<List<BookingResponseDto>>> getBookingsByUser(@PathVariable String username) {
 		List<BookingResponseDto> bookings = bookingService.getBookingsByUsername(username);
 		return ResponseEntity.ok(ApiResponse.success(bookings));
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@PostMapping("/book")
 	public ResponseEntity<ApiResponse<List<SuccessMessage>>> bookTicket(@Valid @RequestBody BookingRequestDto request) {
 		bookingService.bookTicket(request.getUsername(), request.getTripId(), request.getSeatClass(),
@@ -43,6 +48,7 @@ public class BookingController {
 		return ResponseEntity.ok(ApiResponse.success(messages));
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@PostMapping("/cancel")
 	public ResponseEntity<ApiResponse<List<SuccessMessage>>> cancelBooking(
 			@Valid @RequestBody CancelBookingRequestDto request) {

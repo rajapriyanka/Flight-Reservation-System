@@ -34,5 +34,6 @@ public final class ErrorCode {
 	public static final int TRIP_ECONOMY_FARE_INVALID = 406;
 	public static final int TRIP_BUSINESS_FARE_INVALID = 407;
 	public static final int TRIP_STATUS_INVALID = 408;
+	public static final int ACCESS_DENIED = 409;
 
 }

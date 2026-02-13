@@ -17,7 +17,7 @@ public class UserService {
 
 	private UserDto toDTO(User user) {
 		return new UserDto(user.getId(), user.getUsername(), user.getPassword(), user.getFirstName(),
-				user.getLastName(), user.getEmail(), user.getPhone(), user.getWallet());
+				user.getLastName(), user.getEmail(), user.getPhone(), user.getWallet(), user.getRole());
 	}
 
 	public UserDto saveUser(UserDto dto) {
@@ -36,6 +36,7 @@ public class UserService {
 		user.setPhone(dto.getPhone());
 		user.setWallet(dto.getWallet());
 		user.setPassword(dto.getPassword());
+		user.setRole(dto.getRole());
 
 		User savedUser = userRepository.save(user);
 		return toDTO(savedUser);

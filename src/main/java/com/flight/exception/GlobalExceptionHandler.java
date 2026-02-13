@@ -3,6 +3,7 @@ package com.flight.exception;
 import com.flight.util.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -80,6 +81,14 @@ public class GlobalExceptionHandler {
 		};
 	}
 
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<ApiResponse<Void>> handleAccessDenied(AccessDeniedException ex) {
+
+		List<ApiError> errors = List.of(new ApiError(ErrorCode.ACCESS_DENIED, "Access Denied"));
+
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ApiResponse.failure(ErrorCode.ACCESS_DENIED, errors));
+	}
+
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ApiResponse<Void>> handleOtherExceptions(Exception ex) {
 
@@ -107,7 +116,8 @@ public class GlobalExceptionHandler {
 		}
 		int outerResponseCode = errors.get(0).getResponseCode();
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.failure(outerResponseCode, errors));
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_CONTENT)
+				.body(ApiResponse.failure(outerResponseCode, errors));
 	}
 
 }

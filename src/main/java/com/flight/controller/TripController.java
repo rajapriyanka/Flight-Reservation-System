@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class TripController {
 	@Autowired
 	private TripService tripService;
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchTrips")
 	public ResponseEntity<ApiResponse<List<TripDto>>> getAllTrips() {
 		return ResponseEntity.ok(ApiResponse.success(tripService.getAllTrips()));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchTrip/{id}")
 	public ResponseEntity<ApiResponse<?>> getTripById(@PathVariable Long id) {
 
@@ -36,6 +39,7 @@ public class TripController {
 				});
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/startTrip/{id}")
 	public ResponseEntity<ApiResponse<?>> startTrip(@PathVariable Long id) {
 		tripService.startTrip(id);
@@ -43,6 +47,7 @@ public class TripController {
 		return ResponseEntity.ok(ApiResponse.success(List.of(new SuccessMessage("Trip started successfully"))));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/endTrip/{id}")
 	public ResponseEntity<ApiResponse<?>> endTrip(@PathVariable Long id) {
 		tripService.endTrip(id);
@@ -50,6 +55,7 @@ public class TripController {
 		return ResponseEntity.ok(ApiResponse.success(List.of(new SuccessMessage("Trip ended successfully"))));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/addTrip")
 	public ResponseEntity<ApiResponse<?>> addTrip(@Valid @RequestBody TripDto tripDto) {
 
@@ -68,6 +74,7 @@ public class TripController {
 				.body(ApiResponse.success(List.of(new SuccessMessage(msg))));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/deleteTrip/{id}")
 	public ResponseEntity<ApiResponse<?>> deleteTrip(@PathVariable Long id) {
 
@@ -81,6 +88,7 @@ public class TripController {
 				.body(ApiResponse.failure(error.getResponseCode(), List.of(error)));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/cancelTrip/{id}")
 	public ResponseEntity<ApiResponse<?>> cancelTrip(@PathVariable Long id) {
 

@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class FlightController {
 	@Autowired
 	private FlightService flightService;
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/addFlight")
 	public ResponseEntity<ApiResponse<?>> addFlight(@Valid @RequestBody FlightDto flightDto) {
 
@@ -30,12 +32,14 @@ public class FlightController {
 				.body(ApiResponse.success(messages));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchFlights")
 	public ResponseEntity<ApiResponse<List<FlightDto>>> getAllFlights() {
 		List<FlightDto> flights = flightService.getAllFlights();
 		return ResponseEntity.ok(ApiResponse.success(flights));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchFlight/{id}")
 	public ResponseEntity<ApiResponse<?>> getFlightById(@PathVariable Long id) {
 
@@ -46,6 +50,7 @@ public class FlightController {
 								List.of(new ApiError(ErrorCode.INVALID_REQUEST, "No flight exists with ID " + id)))));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/deleteFlight/{id}")
 	public ResponseEntity<ApiResponse<?>> deleteFlight(@PathVariable Long id) {
 

@@ -1,5 +1,10 @@
 package com.flight.dto;
 
+import com.flight.util.Role;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 
 public class UserDto {
@@ -32,8 +37,12 @@ public class UserDto {
 	@PositiveOrZero(message = "Wallet must be zero or positive")
 	private Float wallet;
 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
+
 	public UserDto(Long id, String username, String password, String firstName, String lastName, String email,
-			String phone, Float wallet) {
+			String phone, Float wallet, Role role) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
@@ -42,6 +51,15 @@ public class UserDto {
 		this.email = email;
 		this.phone = phone;
 		this.wallet = wallet;
+		this.role = role;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 
 	public Long getId() {

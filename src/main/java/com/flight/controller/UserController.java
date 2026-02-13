@@ -9,6 +9,7 @@ import com.flight.util.SuccessMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -21,6 +22,7 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@PostMapping("/addUser")
 	public ResponseEntity<ApiResponse<List<SuccessMessage>>> saveUser(@Valid @RequestBody UserDto userDTO) {
 
@@ -34,12 +36,14 @@ public class UserController {
 		return ResponseEntity.status(isCreate ? HttpStatus.CREATED : HttpStatus.OK).body(ApiResponse.success(messages));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchUser")
 	public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
 		List<UserDto> users = userService.getAllUsers();
 		return ResponseEntity.ok(ApiResponse.success(users));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/deleteUser/{id}")
 	public ResponseEntity<ApiResponse<?>> deleteUser(@PathVariable Long id) {
 
@@ -56,6 +60,7 @@ public class UserController {
 				.body(ApiResponse.failure(apiError.getResponseCode(), List.of(apiError)));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@GetMapping("/fetchUser/{id}")
 	public ResponseEntity<ApiResponse<?>> getUserById(@PathVariable Long id) {
 
