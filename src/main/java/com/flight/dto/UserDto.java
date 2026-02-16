@@ -41,11 +41,10 @@ public class UserDto {
 	@Column(nullable = false)
 	private Role role;
 
-	public UserDto(Long id, String username, String password, String firstName, String lastName, String email,
-			String phone, Float wallet, Role role) {
+	public UserDto(Long id, String username, String firstName, String lastName, String email, String phone,
+			Float wallet, Role role) {
 		this.id = id;
 		this.username = username;
-		this.password = password;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.email = email;

@@ -1,5 +1,6 @@
 package com.flight.controller;
 
+import com.flight.dto.ChangePasswordRequestDto;
 import com.flight.dto.UserDto;
 import com.flight.service.UserService;
 import com.flight.util.ApiError;
@@ -23,6 +24,24 @@ public class UserController {
 	private UserService userService;
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
+	@PostMapping("/change-password")
+	public ResponseEntity<ApiResponse<?>> changePassword(@Valid @RequestBody ChangePasswordRequestDto request) {
+
+		try {
+			String result = userService.handleChangePassword(request);
+			List<SuccessMessage> messages = List.of(new SuccessMessage(result));
+			return ResponseEntity.ok(ApiResponse.success(messages));
+		} catch (IllegalArgumentException ex) {
+			ApiError apiError = new ApiError(ErrorCode.INVALID_REQUEST, ex.getMessage());
+			return ResponseEntity.ok().body(ApiResponse.failure(apiError.getResponseCode(), List.of(apiError)));
+		} catch (RuntimeException ex) {
+			ApiError apiError = new ApiError(ErrorCode.USER_NOT_FOUND, ex.getMessage());
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(ApiResponse.failure(apiError.getResponseCode(), List.of(apiError)));
+		}
+	}
+
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@PostMapping("/addUser")
 	public ResponseEntity<ApiResponse<List<SuccessMessage>>> saveUser(@Valid @RequestBody UserDto userDTO) {
 
@@ -33,7 +52,7 @@ public class UserController {
 		List<SuccessMessage> messages = List
 				.of(new SuccessMessage(isCreate ? "User created successfully" : "User updated successfully"));
 
-		return ResponseEntity.status(isCreate ? HttpStatus.CREATED : HttpStatus.OK).body(ApiResponse.success(messages));
+		return ResponseEntity.status(isCreate ? HttpStatus.OK : HttpStatus.OK).body(ApiResponse.success(messages));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
